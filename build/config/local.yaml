@@ -1,7 +1,7 @@
 name: aws
 type: build
 clear_build_path: false
-visibility: private
+visibility: public
 next:
 - build: publish
 	copy:
