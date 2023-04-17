@@ -11,13 +11,16 @@ class aws(Builder):
 		
 		this.optionalKWArgs["aws_region"] = "us-east-1"
 
+	def GetAccountId(this):
+		return this.GetClient("sts").get_caller_identity().get("Account")
+
 	def CreateSession(this):
 		this.session = boto3.session.Session(
 			aws_access_key_id=this.aws_access_key_id,
 			aws_secret_access_key=this.aws_access_key_secret,
 			region_name=this.aws_region
 		)
-		logging.info(f"Logged into AWS as account {this.GetClient('sts').get_caller_identity().get('Account')}")
+		logging.info(f"Logged into AWS as account {this.GetAccountId()}")
 
 	def GetClient(this, service):
 		if (this.session is None):	
