@@ -13,7 +13,7 @@ class aws(Builder):
 
 	def CreateSession(this):
 		this.session = boto3.session.Session(
-			aws_access_key_id_id=this.aws_access_key_id,
+			aws_access_key_id=this.aws_access_key_id,
 			aws_secret_access_key=this.aws_access_key_secret,
 			region_name=this.aws_region
 		)
@@ -23,7 +23,7 @@ class aws(Builder):
 		if (this.session is None):	
 			return boto3.client(
 				service,
-				aws_access_key_id_id=this.aws_access_key_id,
+				aws_access_key_id=this.aws_access_key_id,
 				aws_secret_access_key=this.aws_access_key_secret,
 				region_name=this.aws_region
 			)
