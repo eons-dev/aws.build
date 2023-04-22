@@ -34,3 +34,10 @@ class aws(Builder):
 
 	def Build(this):
 		this.CreateSession()
+
+class aws_resource(Builder):
+	def __init__(this, name="AWS Resource"):
+		super().__init__(name)
+		
+		this.requiredKWArgs.append("aws")
+		
