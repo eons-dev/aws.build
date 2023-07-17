@@ -1,43 +1,50 @@
 from ebbs import Builder
+import eons
 import boto3
 import logging
 
-class aws(Builder):
-	def __init__(this, name="AWS"):
-		super().__init__(name)
-		
-		this.requiredKWArgs.append("aws_access_key_id")
-		this.requiredKWArgs.append("aws_access_key_secret")
-		
-		this.optionalKWArgs["aws_region"] = "us-east-1"
+@eons.kind(eons.Functor)
+def aws_GetAccountId():
+	return caller.GetClient("sts").get_this_identity().get("Account")
 
-	def GetAccountId(this):
-		return this.GetClient("sts").get_caller_identity().get("Account")
+@eons.kind(eons.Functor)
+def aws_CreateSession():
+	caller.session = boto3.session.Session(
+		aws_access_key_id=caller.aws_access_key_id,
+		aws_secret_access_key=caller.aws_access_key_secret,
+		region_name=caller.aws_region
+	)
+	logging.info(f"Logged into AWS as account {caller.GetAccountId()}")
 
-	def CreateSession(this):
-		this.session = boto3.session.Session(
-			aws_access_key_id=this.aws_access_key_id,
-			aws_secret_access_key=this.aws_access_key_secret,
-			region_name=this.aws_region
+@eons.kind(eons.Functor)
+def aws_GetClient(service):
+	if (caller.session is None):
+		return boto3.client(
+			service,
+			aws_access_key_id=caller.aws_access_key_id,
+			aws_secret_access_key=caller.aws_access_key_secret,
+			region_name=caller.aws_region
 		)
-		logging.info(f"Logged into AWS as account {this.GetAccountId()}")
+	return caller.session.client(service)
 
-	def GetClient(this, service):
-		if (this.session is None):	
-			return boto3.client(
-				service,
-				aws_access_key_id=this.aws_access_key_id,
-				aws_secret_access_key=this.aws_access_key_secret,
-				region_name=this.aws_region
-			)
-		return this.session.client(service)
+@eons.kind(Builder)
+def aws(
+	aws_access_key_id,
+	aws_access_key_secret,
+	aws_region = "us-east-1",	
 
-	def Build(this):
-		this.CreateSession()
+	public = eons.public_methods(
+		GetAccountId = "aws_GetAccountId",
+		CreateSession = "aws_CreateSession",
+		GetClient = "aws_GetClient",
+		s3 = "aws_s3",
+		iam = "aws_iam",
+		dynamo = "aws_dynamo"
+	),
 
-class aws_resource(Builder):
-	def __init__(this, name="AWS Resource"):
-		super().__init__(name)
-		
-		this.requiredKWArgs.append("aws")
-		
+	constructor = f"""\
+this.aws = this
+"""
+):
+	return CreateSession()
+
