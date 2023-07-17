@@ -1,9 +1,12 @@
 import eons
+from aws_resource import aws_resource
 
-@eons.kind(eons.Functor)
+@eons.kind(aws_resource)
 def aws_s3(
+	bucket_name,
+
 	public = eons.public_methods(
-		bucket = "aws_s3_bucket"
+		create = "aws_s3_create",
 	)
 ):
 	pass

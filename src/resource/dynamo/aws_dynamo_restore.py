@@ -1,7 +1,7 @@
-from aws_resource import aws_resource
+from aws_operation import aws_operation
 import eons
 
-@eons.kind(aws_resource)
+@eons.kind(aws_operation)
 def aws_dynamo_restore(
 	backup,
 	table,

@@ -1,6 +1,9 @@
 import eons
+from aws_resource import aws_resource
 
-@eons.kind(eons.Functor)
+# TODO:IAM Likely needs another resource level, like iam.role("my-role").create()
+
+@eons.kind(aws_resource)
 def aws_iam(
 	public = eons.public_methods(
 		role = "aws_iam_role",
