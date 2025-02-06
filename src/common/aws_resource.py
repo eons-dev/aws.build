@@ -13,11 +13,4 @@ class aws_resource(Builder):
 		super().__init__(name)
 		
 		this.requiredKWArgs.append("aws")
-		this.enableAutoReturn = False
-
-	def SaveState(this):
-		pass
-
-	def Build(this):
-		this.SaveState()
-		return this
+		this.enableAutoReturn = True # return *this

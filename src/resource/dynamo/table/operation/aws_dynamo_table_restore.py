@@ -8,7 +8,8 @@ def aws_dynamo_restore(
 ):
 	client = this.aws.GetClient("dynamodb")
 
-	client.restore_table_from_backup(
+	response = client.restore_table_from_backup(
 		BackupArn = backup,
 		TargetTableName = table
 	)
+	this.data.result = eons.util.DotDict(response)
